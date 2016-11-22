@@ -22,4 +22,4 @@ if __name__=='__main__':
                 EmailNotify(message,message)
             else:
                 print  u'还在轨道通道内  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(i,realtimePrice,upperprice,middleprice,lowerprice)
-            time.sleep(10)
+            time.sleep(1800)
