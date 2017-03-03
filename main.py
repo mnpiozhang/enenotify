@@ -8,8 +8,7 @@ import threading
 
 lst = GetConfigList('stock_number')
 
-
-def get_ene(stock_number):
+def get_ene(stock_number,mutex):
     while True:
         realtimePrice = function.GetRealTimePrice(stock_number)
         enelst = function.CalculateRealTimeENE(stock_number, 10, 11, 9)
@@ -18,21 +17,30 @@ def get_ene(stock_number):
         middleprice = enelst[2]
         print realtimePrice,upperprice,middleprice,lowerprice
         if realtimePrice > upperprice:
-            message = u'打到上轨了  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(i,realtimePrice,upperprice,middleprice,lowerprice)  
+            message = u'打到上轨了  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(stock_number,realtimePrice,upperprice,middleprice,lowerprice)
+            mutex.acquire()
+            print message
+            mutex.release()
             EmailNotify(message,message)
             time.sleep(1800)
         elif realtimePrice < lowerprice:
-            message = u'跌到下轨了  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(i,realtimePrice,upperprice,middleprice,lowerprice)
+            message = u'跌到下轨了  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(stock_number,realtimePrice,upperprice,middleprice,lowerprice)
+            mutex.acquire()
+            print message
+            mutex.release()
             EmailNotify(message,message)
             time.sleep(1800)
         else:
-            print  u'还在轨道通道内  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(i,realtimePrice,upperprice,middleprice,lowerprice)
+            mutex.acquire()
+            print  u'还在轨道通道内  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(stock_number,realtimePrice,upperprice,middleprice,lowerprice)
+            mutex.release()
             time.sleep(10)
 
 if __name__=='__main__':
     threadlst = []
+    mutex = threading.Lock()
     for i in lst:
-        t = threading.Thread(target=get_ene,args=(i,))
+        t = threading.Thread(target=get_ene,args=(i,mutex,))
         t.start()
         threadlst.append(t)
     print "ene calculate start"
