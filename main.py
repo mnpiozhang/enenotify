@@ -15,7 +15,7 @@ def get_ene(stock_number,mutex):
         upperprice = enelst[0]
         lowerprice = enelst[1]
         middleprice = enelst[2]
-        print realtimePrice,upperprice,middleprice,lowerprice
+        #print realtimePrice,upperprice,middleprice,lowerprice
         if realtimePrice > upperprice:
             message = u'打到上轨了  %s 现价 %s 上轨 %s 中轨%s 下轨%s'%(stock_number,realtimePrice,upperprice,middleprice,lowerprice)
             mutex.acquire()
